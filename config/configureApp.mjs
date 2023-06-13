@@ -3,6 +3,7 @@ import express from "express";
 import "./loadEnvironment.mjs";
 import userRouter from "../routes/user.router.mjs";
 import authRouter from "../routes/auth.router.mjs";
+import movieRouter from "../routes/movie.router.mjs";
 
 const configureApp = (app) => {
     const origin = process.env.CORS_ORIGIN;
@@ -30,6 +31,7 @@ const configureApp = (app) => {
     
     app.use("/", authRouter);
     app.use("/", userRouter);
+    app.use("/", movieRouter);
 
     return app;
 }

@@ -21,7 +21,7 @@ const signup = async (req, res) => {
     
     if (!roles) {
         roles = await Role.findOne({ name: "user" });
-        console.log(`No role specified for new user ${req.body.username}. Role "Admin" assigned by default`);
+        console.log(`No role specified for new user ${req.body.username}. Role "user" assigned by default`);
     };
 
     newUser.roles = roles.map(role => role._id);

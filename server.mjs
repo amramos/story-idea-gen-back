@@ -9,7 +9,7 @@ app = configureApp(app);
 
 initializeDB(db);
 
-const port = process.env.PORT || 8080;
+const port = process.env.HOST_PORT || 8080;
 
 app.listen(port, () => {
   return console.log(`Express is listening at http://localhost:${port}`);
