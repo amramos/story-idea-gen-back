@@ -47,6 +47,8 @@ const add = async (req, res) => {
 const getAll = async (req, res) => {
     const parameters = req.body;
     
+    console.log(`username: ${parameters.username}`);
+
     let filter = {};
     if (!parameters.username) {
         filter = {}
@@ -57,7 +59,7 @@ const getAll = async (req, res) => {
 
     const userMovies = await Movie.find(filter);
 
-    console.log(userMovies);
+    //console.log(userMovies);
 
     var moviesList = [];
     
