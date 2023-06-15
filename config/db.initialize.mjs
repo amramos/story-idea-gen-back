@@ -19,7 +19,7 @@ const initializeDB = () => {
             initialize();
         })
         .catch(err => {
-            console.error("Connection error", err);
+            // console.error("Connection error", err);
             process.exit();
         });
 };

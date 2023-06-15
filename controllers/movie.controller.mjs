@@ -12,19 +12,26 @@ const reqMovies = axios.create({
 });
 
 const add = async (req, res) => {
+    
     const parameters = req.body;
+
+    console.log(`trying to add movie ${parameters.movieId} to user ${parameters.username}`);
 
     // get all movies associated with this user
     const loggedUser = await User.findOne({ username: parameters.username });
-
-    console.log("loggedUser:");
-    console.log(loggedUser);
 
     var url = ['https://api.themoviedb.org/3/movie/', parameters.movieId || 11].join('');
 
     var response = await reqMovies.get(url);
 
     var movie = response.data;
+
+    const movieAlreadyAdded = await Movie.findOne({userID: loggedUser._id, id: movie.id});
+
+    if (movieAlreadyAdded) {
+        res.status(500).send({errorMessage: "This movie is already in the user's list"});
+        return;
+    }
 
     const newMovie = new Movie({
         name: movie.original_title,
@@ -44,10 +51,38 @@ const add = async (req, res) => {
         });
 };
 
+const remove = async (req, res) => {
+    
+    const parameters = req.body;
+
+    console.log(`trying to removie movie ${parameters.movieId} from user ${parameters.username}`);
+
+    // get all movies associated with this user
+    const loggedUser = await User.findOne({ username: parameters.username });
+
+    var url = ['https://api.themoviedb.org/3/movie/', parameters.movieId || 11].join('');
+
+    var response = await reqMovies.get(url);
+
+    var movie = response.data;
+
+    const movieAlreadyAdded = await Movie.findOne({userID: loggedUser._id, id: movie.id});
+
+    if (movieAlreadyAdded) {
+        Movie.deleteOne({userID: loggedUser._id, id: movie.id})
+            .then((deletedMovie) => {
+                res.status(200).send(deletedMovie);
+            })
+            .catch((err) => {
+                res.status(500).send("Error deleting movie");
+            });
+    }
+};
+
 const getAll = async (req, res) => {
     const parameters = req.body;
     
-    console.log(`username: ${parameters.username}`);
+    //console.log(`username: ${parameters.username}`);
 
     let filter = {};
     if (!parameters.username) {
@@ -58,8 +93,6 @@ const getAll = async (req, res) => {
     }
 
     const userMovies = await Movie.find(filter);
-
-    //console.log(userMovies);
 
     var moviesList = [];
     
@@ -76,6 +109,7 @@ const getAll = async (req, res) => {
 
 const movieController = {
     add,
+    remove,
     getAll,
 };
 
